@@ -47,13 +47,20 @@ import (
 
 // use map to count number of chars, since we can have duplicates in t
 func solution(s string, t string) string {
+	// length, start, end
 	ans := []int{math.MaxInt, 0, 0}
+
+	// build need map for reference
 	need := make(map[string]int)
 	for _, b := range t {
 		need[string(b)] += 1
 	}
+	// num of unique chars
 	tl := len(need)
+
+	// current
 	db := make(map[string]int)
+	// counter is seen unique chars
 	start, end, counter := 0, 0, 0
 
 	for end < len(s) {
@@ -62,15 +69,17 @@ func solution(s string, t string) string {
 		if ok && db[string(s[end])] == need[string(s[end])] {
 			counter++
 		}
+		// if start does not pass end, the substring is valid
 		for start <= end && counter == tl {
+			// update the answer if we found a shorter one
 			if end-start+1 < ans[0] {
 				ans = []int{end - start + 1, start, end}
 			}
-			db[string(s[start])]--
 			_, ok := need[string(s[start])]
-			if ok && db[string(s[start])] < need[string(s[start])] {
+			if ok && db[string(s[start])] == need[string(s[start])] {
 				counter--
 			}
+			db[string(s[start])]--
 			start++
 		}
 		end++
